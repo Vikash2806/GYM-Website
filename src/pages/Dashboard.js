@@ -8,10 +8,8 @@ import axios from "axios";
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({
-    scheduled: 0,
-    paid: 0,
-    overdue: 0,
     attendance: [],
+    circularStats: {}, // Store scheduled, paid, overdue stats here
     notifications: [],
     bookings: [],
   });
@@ -52,31 +50,9 @@ const Dashboard = () => {
 
         {/* TOP SECTION - Stats & Attendance Chart */}
         <Grid container spacing={3}>
-          {/* Circular Stats */}
+          {/* Circular Stats (Cleaner Implementation) */}
           <Grid item xs={12} md={6} lg={8}>
-            <Grid container spacing={3}>
-              <Grid item>
-                <CircularStats
-                  label="Scheduled"
-                  value={dashboardData.scheduled}
-                  color="#3B82F6"
-                />
-              </Grid>
-              <Grid item>
-                <CircularStats
-                  label="Paid"
-                  value={dashboardData.paid}
-                  color="#06B6D4"
-                />
-              </Grid>
-              <Grid item>
-                <CircularStats
-                  label="Overdue"
-                  value={dashboardData.overdue}
-                  color="#8B5CF6"
-                />
-              </Grid>
-            </Grid>
+            <CircularStats data={dashboardData.circularStats} />
           </Grid>
 
           {/* Attendance Chart in TOP RIGHT */}

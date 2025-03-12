@@ -7,7 +7,7 @@ require("dotenv").config();
 const Attendance = require("./models/Attendance");
 const Booking = require("./models/Booking");
 const Notification = require("./models/Notification");
-const Stats = require("./models/Stats");
+const CircularStats = require("./models/CircularStats");
 
 // Initialize Express app
 const app = express();

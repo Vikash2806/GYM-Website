@@ -2,7 +2,7 @@ const express = require("express");
 const Attendance = require("../models/Attendance");
 const Booking = require("../models/Booking");
 const Notification = require("../models/Notification");
-const Stats = require("../models/Stats");
+const CircularStats = require("../models/CircularStats");
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.get("/attendance", async (req, res) => {
       res.status(500).json({ message: "Server error", error });
     }
   });
-  
+
 
 // Get Bookings Data
 router.get("/bookings", async (req, res) => {
@@ -40,9 +40,31 @@ router.get("/notifications", async (req, res) => {
 });
 
 // Get Stats Data
-router.get("/stats", async (req, res) => {
-  const data = await Stats.find();
-  res.json(data);
-});
-
+router.get("/circular-stats/:type", async (req, res) => {
+    try {
+      let stat = await CircularStats.findOne({ type: req.params.type });
+  
+      // If no data exists, insert dummy data
+      if (!stat) {
+        const dummyValues = {
+          scheduled: 1200,
+          paid: 800,
+          overdue: 400,
+        };
+  
+        const newStat = new CircularStats({
+          type: req.params.type,
+          value: dummyValues[req.params.type] || 0, // Default to 0 if invalid type
+        });
+  
+        await newStat.save();
+        stat = newStat; // Use the newly created document
+      }
+  
+      res.json({ value: stat.value });
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+ 
 module.exports = router;
