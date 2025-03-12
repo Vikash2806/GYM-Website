@@ -15,7 +15,7 @@ router.get("/attendance", async (req, res) => {
       if (!latestAttendance) {
         latestAttendance = await Attendance.create({
           week: "Week 1",
-          attendance: [3, 7, 9, 6, 5, 2, 10] // Dummy data
+          attendance: [3, 7, 9, 6, 5, 2, 6] // Dummy data
         });
       }
   
