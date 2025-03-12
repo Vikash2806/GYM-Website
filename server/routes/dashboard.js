@@ -41,30 +41,41 @@ router.get("/notifications", async (req, res) => {
 
 // Get Stats Data
 router.get("/circular-stats/:type", async (req, res) => {
-    try {
-      let stat = await CircularStats.findOne({ type: req.params.type });
-  
-      // If no data exists, insert dummy data
-      if (!stat) {
-        const dummyValues = {
-          scheduled: 1200,
-          paid: 800,
-          overdue: 400,
-        };
-  
-        const newStat = new CircularStats({
-          type: req.params.type,
-          value: dummyValues[req.params.type] || 0, // Default to 0 if invalid type
-        });
-  
-        await newStat.save();
-        stat = newStat; // Use the newly created document
+  try {
+    const { type } = req.params;
+
+    // Try finding the stat
+    let stat = await CircularStats.findOne({ type });
+
+    // Check if stat doesn't exist
+    if (!stat) {
+      const totalCount = await CircularStats.countDocuments();
+
+      // If DB is empty, insert dummy data
+      if (totalCount === 0) {
+        const dummyData = [
+          { type: "scheduled", value: 1200 },
+          { type: "paid", value: 800 },
+          { type: "overdue", value: 400 },
+        ];
+        await CircularStats.insertMany(dummyData);
+        console.log("✅ Inserted dummy circular stats data");
+
+        // Try fetching again
+        stat = await CircularStats.findOne({ type });
       }
-  
-      res.json({ value: stat.value });
-    } catch (error) {
-      res.status(500).json({ error: "Server error" });
     }
-  });
+
+    if (stat) {
+      res.json({ value: stat.value });
+    } else {
+      res.status(404).json({ error: "Stat not found" }); 
+    }
+  } catch (error) {
+    console.error("❌ Error fetching circular stats:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
  
 module.exports = router;
