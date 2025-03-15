@@ -28,15 +28,122 @@ router.get("/attendance", async (req, res) => {
 
 
 // Get Bookings Data
+// Dummy booking data
+const dummyBookings = [
+  {
+    time: '1:30PM',
+    title: 'Private lesson',
+    status: 'Scheduled',
+    instructor: 'Rory Almond',
+    attendees: 1,
+    category: 'Today',
+  },
+  {
+    time: '6:00PM',
+    title: 'Basics No-GI',
+    status: 'In Progress',
+    instructor: 'Rory Almond',
+    attendees: 4,
+    category: 'Today',
+  },
+  {
+    time: '7:30PM',
+    title: 'Sparring',
+    status: 'Upcoming',
+    instructor: 'Steven Seagal',
+    attendees: 3,
+    category: 'Upcoming',
+  },
+  {
+    time: '9:00PM',
+    title: 'Advanced Class',
+    status: 'Upcoming',
+    instructor: 'Bruce Lee',
+    attendees: 2,
+    category: 'Upcoming',
+  },
+];
+
+// GET /api/bookings
 router.get("/bookings", async (req, res) => {
-  const data = await Booking.find();
-  res.json(data);
+  try {
+    let bookings = await Booking.find().sort({ createdAt: -1 }).limit(10);
+
+    if (bookings.length === 0) {
+      const dummyBookings = [
+        {
+          time: '1:30PM',
+          title: 'Private lesson',
+          status: 'Scheduled',
+          instructor: 'Rory Almond',
+          attendees: 1,
+          category: 'Today',
+        },
+        {
+          time: '6:00PM',
+          title: 'Basics No-GI',
+          status: 'In Progress',
+          instructor: 'Rory Almond',
+          attendees: 4,
+          category: 'Today',
+        },
+        {
+          time: '7:30PM',
+          title: 'Sparring',
+          status: 'Upcoming',
+          instructor: 'Steven Seagal',
+          attendees: 3,
+          category: 'Upcoming',
+        },
+        {
+          time: '9:00PM',
+          title: 'Advanced Class',
+          status: 'Upcoming',
+          instructor: 'Bruce Lee',
+          attendees: 2,
+          category: 'Upcoming',
+        },
+      ];
+
+      await Booking.insertMany(dummyBookings);
+      console.log("✅ Inserted dummy booking data");
+
+      bookings = await Booking.find().sort({ createdAt: -1 }).limit(10);
+    }
+
+    res.json(bookings);
+  } catch (error) {
+    console.error("❌ Error fetching bookings:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 // Get Notifications Data
 router.get("/notifications", async (req, res) => {
-  const data = await Notification.find();
-  res.json(data);
+  try {
+    let notifications = await Notification.find().sort({ date: -1 }).limit(5); // Get latest 5 notifications
+
+    // Check if notifications exist
+    if (notifications.length === 0) {
+      const dummyNotifications = [
+        { message: "New event scheduled for next week!", date: new Date(), type: "info" },
+        { message: "Reminder: Payment due in 3 days", date: new Date(), type: "warning" },
+        { message: "Your subscription has been successfully renewed!", date: new Date(), type: "success" },
+      ];
+
+      // Insert dummy notifications
+      await Notification.insertMany(dummyNotifications);
+      console.log("✅ Inserted dummy notifications data");
+
+      // Fetch again after inserting
+      notifications = await Notification.find().sort({ date: -1 }).limit(5);
+    }
+
+    res.json(notifications);
+  } catch (error) {
+    console.error("❌ Error fetching notifications:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 // Get Stats Data

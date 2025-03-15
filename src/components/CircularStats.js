@@ -11,7 +11,7 @@ const CircularStats = ({ label, type, color }) => {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/circular-stats/${type}`)
+    axios.get(`http://localhost:5000/api/dashboard/circular-stats/${type}`)
       .then(response => {
         setValue(response.data.value); // Expecting { value: number }
       })
@@ -24,7 +24,7 @@ const CircularStats = ({ label, type, color }) => {
         data: [value, 100 - value],
         backgroundColor: [color, "#e0e0e0"],
         borderWidth: 3,
-        borderRadius: 10,
+        borderRadius: 3,
         spacing: 0,
         hoverOffset: 0,
       },

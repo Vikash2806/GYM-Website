@@ -1,9 +1,17 @@
-const mongoose = require("mongoose");
+// models/Booking.js
+const mongoose = require('mongoose');
 
-const BookingSchema = new mongoose.Schema({
-  user: String,
+const bookingSchema = new mongoose.Schema({
   time: String,
-  status: String, // Scheduled, Completed, Cancelled
+  title: String,
+  status: String,
+  instructor: String,
+  attendees: Number,
+  category: String, // e.g. In Progress, Upcoming
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-module.exports = mongoose.model("Booking", BookingSchema);
+module.exports = mongoose.model('Booking', bookingSchema);

@@ -5,6 +5,19 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Hide scrollbars while keeping scroll functionality */
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+/* Optional: Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
 }
 
 code {
